@@ -12,10 +12,16 @@ pub fn put_bucket(req: *httpz.Request, res: *httpz.Response) !void {
     res.header("x-amz-bucket-arn", "some_arn");
     const cwd = fs.cwd();
     if (req.param("bucket_name")) |bucket_name| {
-        try cwd.makeDir(bucket_name);
-
-        res.status = 200;
-        res.body = bucket_name;
+        if (cwd.makeDir(bucket_name)) |_| {
+            res.status = 200;
+            res.body = "OK";
+        } else |err| switch(err) {
+            error.PathAlreadyExists => {
+                res.status = 400;
+                res.body = "Already exists";
+            },
+            else => |other_err| return other_err,
+        }
     } else {
         res.status = 400;
     }
