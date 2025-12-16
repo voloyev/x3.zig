@@ -34,7 +34,7 @@ pub fn put_object(req: *httpz.Request, res: *httpz.Response) !void {
     const bucket = try req.param("bucket_name");
     const bucket_dir = try fs.cwd().openDir(bucket);
 
-    if (req.param("object_name")) |object_name| {
+    if (req.header("Key")) |object_name| {
         const file = try bucket_dir.createFile(object_name);
         errdefer file.close();
         
