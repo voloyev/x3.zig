@@ -11,7 +11,6 @@ pub fn health_endpoind_handler(_: *httpz.Request, res: *httpz.Response) !void {
 }
 
 pub fn put_bucket(req: *httpz.Request, res: *httpz.Response) !void {
-    // const bucket_name = req.param("bucket_name").?;
     res.header("x-amz-bucket-arn", "some_arn");
     const cwd = fs.cwd();
     if (req.param("bucket_name")) |bucket_name| {
